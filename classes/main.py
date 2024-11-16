@@ -1,16 +1,7 @@
 from AI_engine import *
 from mazeEnv import *
 
-env = MazeEnv(size=5)
-agent = Agent(env)
-agent, env = trainAgent(env, agent, num_episodes=100)
-# env.change_goal([2, 3])
-# agent, env = trainAgent(env, agent, num_episodes=100)
-
-env.render(show_path=True)
-
-
-def trainAgent(env, agent, num_episodes=500):
+def trainAgent(env, agent, num_episodes):
     for episode in range(num_episodes):
         state = env.reset()
         done = False
@@ -35,3 +26,13 @@ def trainAgent(env, agent, num_episodes=500):
 
 
     return agent, env
+
+env = MazeEnv(size=5)
+agent = Agent(env)
+agent, env = trainAgent(env, agent, num_episodes=500)
+# env.change_goal([2, 3])
+# agent, env = trainAgent(env, agent, num_episodes=100)
+
+env.render(show_path=True)
+
+
