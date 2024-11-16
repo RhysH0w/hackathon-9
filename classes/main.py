@@ -1,13 +1,30 @@
 from AI_engine import *
 from text_UI import *
+
+def test_agent(env, agent):
+    state = env.reset()
+    done = False
+    total_reward = 0
+    
+    while not done:
+        action = agent.choose_action(state)
+        state, reward, done = env.step(action)
+        total_reward += reward
+    
+    print(f"Test run: Total Reward = {total_reward:.2f}")
+    env.render(show_path=True)
+
+# Train the agent first, then run this test
 env = MazeEnv(size=5)
 agent = Agent(env)
 
-num_episodes = 500
+# Training Loop (similar to the previous implementation)
+num_episodes = 50
 for episode in range(num_episodes):
     state = env.reset()
     done = False
     total_reward = 0
+    count = 0
     
     while not done:
         action = agent.choose_action(state)
@@ -18,17 +35,18 @@ for episode in range(num_episodes):
         
         # Train the agent
         agent.train()
+        count += 1
+        if count > 500:
+            break
+    print(f"Moves: {count}")
+    
+    if episode % agent.update_target_steps == 0:
+        agent.update_target_network()
     
     if (episode + 1) % 50 == 0:
         print(f"Episode {episode + 1}: Total Reward = {total_reward:.2f}, Epsilon = {agent.epsilon:.3f}")
 
 print("Training completed!")
 
-state = env.reset()
-done = False
-env.render()
-
-while not done:
-    action = agent.choose_action(state)
-    state, _, done = env.step(action)
-    env.render()
+# Test the agent and visualize the path
+test_agent(env, agent)
