@@ -5,8 +5,19 @@ class exitBlock(specialBlock):
 
         # Constructor
 
-        def __init__(self, name, colour, type):
-            super().__init__(name, colour, type)
+        def __init__(self, name, colour,):
+            super().__init__(name, colour, "exit")
+            _exitStatus = False
+
+        # Getters
+
+        def getExitStatus(self):
+            return self._exitStatus
+
+        # Setters
+
+        def setExitStatus(self, exitStatus):
+            self._exitStatus = exitStatus
 
         # Methods
 
