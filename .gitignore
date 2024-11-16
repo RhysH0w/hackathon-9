@@ -2,3 +2,8 @@
 classes/__pycache__/AI_engine.cpython-312.pyc
 classes/__pycache__/AI_engine.cpython-312.pyc
 classes/__pycache__/AI_engine.cpython-312.pyc
+
+# Ignore compiled Python files
+__pycache__/
+*.py[cod]
+*$py.class
