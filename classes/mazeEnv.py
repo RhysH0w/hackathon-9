@@ -2,8 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class MazeEnv:
-    def __init__(self, size=5):
+    def __init__(self, size, obstacles):
         self.size = size
+        self.obstacles = obstacles
         self.reset()
     
     def reset(self):
@@ -21,12 +22,10 @@ class MazeEnv:
         new_pos = [self.agent_pos[0] + moves[action][0], self.agent_pos[1] + moves[action][1]]
         
         # Check if the new position is within bounds
-        if 0 <= new_pos[0] < self.size and 0 <= new_pos[1] < self.size:
+        if (0 <= new_pos[0] < self.size and 0 <= new_pos[1] < self.size) and new_pos not in self.obstacles:
             self.agent_pos = new_pos
 
-        # Check if new position is not an obstacle
-        #if new_pos not in :
-        
+
         # Track the path
         self.path.append(self.agent_pos.copy())
         
@@ -48,6 +47,9 @@ class MazeEnv:
         if show_path:
             path = np.array(self.path)
             plt.plot(path[:, 1], path[:, 0], marker='o', color='white', linewidth=2, markersize=5)
+
+            for item in self.obstacles:
+                plt.plot(item[1], item[0], marker='s', color='black', markersize=10)
 
         plt.xticks(range(self.size))
         plt.yticks(range(self.size))

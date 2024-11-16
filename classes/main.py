@@ -1,5 +1,6 @@
 from AI_engine import *
 from mazeEnv import *
+from random import randint
 
 def trainAgent(env, agent, num_episodes):
     for episode in range(num_episodes):
@@ -27,9 +28,15 @@ def trainAgent(env, agent, num_episodes):
 
     return agent, env
 
-env = MazeEnv(size=5)
+obstacles = []
+for i in range(5):
+    coor = [randint(0, 4), randint(0, 4)]
+    if coor != [0, 0] and coor != [4, 4]:
+        obstacles.append(coor)
+
+env = MazeEnv(5, obstacles)
 agent = Agent(env)
-agent, env = trainAgent(env, agent, num_episodes=500)
+agent, env = trainAgent(env, agent, num_episodes=200)
 # env.change_goal([2, 3])
 # agent, env = trainAgent(env, agent, num_episodes=100)
 
