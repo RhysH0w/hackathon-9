@@ -16,7 +16,7 @@ def trainAgent(env, agent, num_episodes=500):
             agent.train()
             state = next_state
             count += 1
-            if count > 100:
+            if count > 500:
                 break
 
         print(f"Episode {episode + 1} - Moves: {count}")
