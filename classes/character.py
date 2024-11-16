@@ -6,8 +6,15 @@ class Character:
         self.sprite = sprite
         self.health = 100
         self.inventory = inventory
-        self.posx = posx
-        self.posy = posy
+        self.position = posx, posy
+
+    def getVisibleArea(self, grid, visionRange):
+        x, y = self.position
+        visibleArea = []
+        for i in range(max(0, x - visionRange), min(len(grid), x + visionRange + 1)):
+            for j in range(max(0, y - visionRange), min(len(grid[0]), y + visionRange + 1)):
+                visibleArea.append((i, j, grid[i][j]))
+        return visibleArea
 
     def getName(self):
         return self.name
