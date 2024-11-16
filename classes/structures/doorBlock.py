@@ -1,23 +1,23 @@
-from classes.structures.specialBlock import specialBlock
+from classes.structures.block import Block
 
-
-class doorBlock(specialBlock):
+class doorBlock(Block):
 
         # Constructor
 
-        def __init__(self, name, colour, locked):
-            super().__init__(name, colour, "door")
-            self._locked = locked
+        def __init__(self, name, colour, passthrough):
+            super().__init__(name, colour, "door", passthrough)
 
         # Getters
 
-        def isLocked(self):
-            return self._locked
+        def getPassThrough(self):
+            return self._passThrough
 
-        # Setters
+        # Methods
 
         def toggle(self):
-            self._locked = not self._locked
-            return self._locked
+            if self._passThrough:
+                self._passThrough = False
+            else:
+                self._passThrough = True
 
 
