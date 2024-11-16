@@ -4,3 +4,7 @@ moves = {
     'left': (0, -1),
     'right': (0, 1)
 }
+
+tileTypes = {
+    'UNKNOWN': -1
+}

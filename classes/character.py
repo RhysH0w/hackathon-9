@@ -19,6 +19,8 @@ class Character:
         for i in range(max(0, x - visionRange), min(len(grid), x + visionRange + 1)):
             for j in range(max(0, y - visionRange), min(len(grid[0]), y + visionRange + 1)):
                 visibleArea.append((i, j, grid[i][j]))
+                # appends a tuple containing the x and y coordinates of  that particular square, and the kind of square
+                # that that position is.
         self._visibleArea = visibleArea
 
     def moveCharacter(self, grid, move):
