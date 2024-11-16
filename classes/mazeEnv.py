@@ -53,13 +53,9 @@ class MazeEnv:
         # Track the path
         self.path.append(self.agent_pos.copy())
 
-
-        
         # Reward for reaching the goal
         if self.agent_pos == self.goal_pos:
             return self.get_state(), 100.0, True  # Reward for reaching the goal
-        else:
-            return self.get_state(), -0.01, False
         
          # Exploration bonus for unvisited squares
         exploration_bonus = 0
@@ -68,8 +64,6 @@ class MazeEnv:
             self.visited[self.agent_pos[0], self.agent_pos[1]] = 1
         else:
             exploration_bonus = -0.1
-            else:
-            return self.get_state(), -0.01, False
         
         # Small penalty for each move to encourage efficiency
         return self.get_state(), -0.01 + exploration_bonus, False
