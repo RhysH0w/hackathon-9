@@ -7,6 +7,7 @@ class Character:
         self.health = 100
         self.inventory = inventory
         self.position = posx, posy
+        self.frozen = False
 
     def getVisibleArea(self, grid, visionRange):
         x, y = self.position
