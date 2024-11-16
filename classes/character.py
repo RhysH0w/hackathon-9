@@ -2,34 +2,36 @@ from classes import *
 
 class Character:
     def __init__(self, name, sprite, inventory, posx, posy):
-        self.name = name
-        self.sprite = sprite
-        self.health = 100
-        self.inventory = inventory
-        self.position = posx, posy
-        self.visibleArea = self.getVisibleArea()
+        self._name = name
+        self._sprite = sprite
+        self._health = 100
+        self._inventory = inventory
+        self._position = posx, posy
+        self._visibleArea = []
+        self._visionRange = 10
 
-    def getVisibleArea(self, grid, visionRange):
-        x, y = self.position
+    def setVisibleArea(self, grid):
+        visionRange = self._visionRange
+        x, y = self._position
         visibleArea = []
         for i in range(max(0, x - visionRange), min(len(grid), x + visionRange + 1)):
             for j in range(max(0, y - visionRange), min(len(grid[0]), y + visionRange + 1)):
                 visibleArea.append((i, j, grid[i][j]))
-        self.visibleArea = visibleArea
+        self._visibleArea = visibleArea
 
     def moveCharacter(self, grid, move):
-        x, y = self.position
+        x, y = self._position
         newX, newY = x + move[0], y + move[1]
         if 0 <= newX < len(grid) and 0 <= newY < len(grid[0]):
-            self.position = newX, newY
+            self._position = newX, newY
 
     def getName(self):
-        return self.name
+        return self._name
     def getHealth(self):
-        return self.health
+        return self._health
     def getInventory(self):
-        return self.inventory
+        return self._inventory
     def getPosx(self):
-        return self.posx
+        return self._posx
     def getPosy(self):
-        return self.posy
+        return self._posy
