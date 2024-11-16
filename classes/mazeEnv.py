@@ -15,6 +15,9 @@ class MazeEnv:
         self.path = [self.agent_pos.copy()]
         return self.get_state()
     
+    def change_goal(self, goal_pos):
+        self.goal_pos = goal_pos
+    
     def get_state(self):
         return [self.agent_pos[0], self.agent_pos[1], self.goal_pos[0], self.goal_pos[1]]
     
@@ -55,7 +58,7 @@ class MazeEnv:
         if show_path:
             # Plot the path as a series of lines
             path = np.array(self.path)
-            plt.plot(path[:, 1], path[:, 0], marker='o', color='blue', linewidth=2, markersize=5)
+            plt.plot(path[:, 1], path[:, 0], marker='o', color='white', linewidth=2, markersize=5)
 
         plt.xticks(range(self.size))
         plt.yticks(range(self.size))

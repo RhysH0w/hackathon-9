@@ -16,19 +16,17 @@ class DQN(nn.Module):
         return self.fc3(x)
 
 class Agent:
-    def __init__(self, env, lr=0.001, gamma=0.99, epsilon=1.0, epsilon_decay=0.995):
+    def __init__(self, env, lr=0.001, gamma=0.95, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995):
         self.env = env
-        self.model = DQN(input_dim=4, output_dim=4)  # Input: [agent_x, agent_y, goal_x, goal_y]
-        self.target_model = DQN(input_dim=4, output_dim=4)
-        self.target_model.load_state_dict(self.model.state_dict())
+        self.model = DQN(input_dim=4, output_dim=4)
         self.optimizer = optim.Adam(self.model.parameters(), lr=lr)
         self.criterion = nn.MSELoss()
         self.gamma = gamma
         self.epsilon = epsilon
+        self.epsilon_min = epsilon_min
         self.epsilon_decay = epsilon_decay
         self.memory = []
         self.batch_size = 32
-        self.update_target_steps = 10
     
     def choose_action(self, state):
         if random.random() < self.epsilon:
@@ -47,7 +45,6 @@ class Agent:
         if len(self.memory) < self.batch_size:
             return
         
-        # Sample a batch of experiences
         batch = random.sample(self.memory, self.batch_size)
         states, actions, rewards, next_states, dones = zip(*batch)
         
@@ -57,22 +54,15 @@ class Agent:
         next_states = torch.FloatTensor(next_states)
         dones = torch.FloatTensor(dones)
         
-        # Calculate Q-values
         q_values = self.model(states).gather(1, actions.unsqueeze(-1)).squeeze(-1)
         with torch.no_grad():
-            next_q_values = self.target_model(next_states).max(1)[0]
-        
-        # Calculate target
+            next_q_values = self.model(next_states).max(1)[0]
         targets = rewards + self.gamma * next_q_values * (1 - dones)
         
-        # Update model
         loss = self.criterion(q_values, targets)
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
-        
-        # Decay epsilon
-        self.epsilon *= self.epsilon_decay
     
-    def update_target_network(self):
-        self.target_model.load_state_dict(self.model.state_dict())
+    def update_epsilon(self):
+        self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
