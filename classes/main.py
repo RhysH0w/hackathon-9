@@ -2,7 +2,9 @@ from AI_engine import *
 from mazeEnv import *
 from random import randint
 
-def trainAgent(env, agent, num_episodes):
+
+
+def trainAgent(env, agent, num_episodes=500):
     for episode in range(num_episodes):
         state = env.reset()
         done = False
@@ -15,17 +17,19 @@ def trainAgent(env, agent, num_episodes):
             agent.train()
             state = next_state
             count += 1
-            if count > 100:
+            if count > 500:
                 break
 
-        print(f"Move count: {count}")
+        print(f"Episode {episode + 1} - Moves: {count}")
 
         agent.update_epsilon()
 
         if (episode + 1) % 50 == 0:
             print(f"Episode {episode + 1}: Epsilon = {agent.epsilon:.3f}")
 
-
+    agent.save_model()
+    print("Training complete. Final model saved.")
+    
     return agent, env
 
 obstacles = []
@@ -41,5 +45,3 @@ agent, env = trainAgent(env, agent, num_episodes=200)
 # agent, env = trainAgent(env, agent, num_episodes=100)
 
 env.render(show_path=True)
-
-
