@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import random
+import os
 
 class DQN(nn.Module):
     def __init__(self, input_dim, output_dim):
@@ -16,7 +17,8 @@ class DQN(nn.Module):
         return self.fc3(x)
 
 class Agent:
-    def __init__(self, env, lr=0.001, gamma=0.95, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995):
+    def __init__(self, env, lr=0.001, gamma=0.99, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995, model_path="dqn_model.pth"):
+
         self.env = env
         self.model = DQN(input_dim=4, output_dim=4)
         self.optimizer = optim.Adam(self.model.parameters(), lr=lr)
@@ -27,6 +29,9 @@ class Agent:
         self.epsilon_decay = epsilon_decay
         self.memory = []
         self.batch_size = 32
+        self.model_path = model_path
+
+        self.load_model()
     
     def choose_action(self, state):
         if random.random() < self.epsilon:
@@ -63,6 +68,31 @@ class Agent:
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
-    
+
+        
+        # Decay epsilon
+        #self.epsilon *= self.epsilon_decay
+
     def update_epsilon(self):
         self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
+    
+    def save_model(self):
+        checkpoint = {
+            'model_state_dict': self.model.state_dict(),
+            'optimizer_state_dict': self.optimizer.state_dict(),
+            'epsilon': self.epsilon,
+        }
+
+        torch.save(checkpoint, self.model_path)
+        print(f"Model saved to {self.model_path}")
+
+    def load_model(self):
+        if os.path.exists(self.model_path):
+            checkpoint = torch.load(self.model_path)
+            self.model.load_state_dict(checkpoint['model_state_dict'])
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.epsilon = checkpoint.get('epsilon', 1.0)
+            print(f"Model loaded from {self.model_path}")
+        else:
+            print("No saved model found. Starting fresh.")
+
