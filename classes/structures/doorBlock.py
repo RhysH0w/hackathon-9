@@ -5,8 +5,8 @@ class doorBlock(specialBlock):
 
         # Constructor
 
-        def __init__(self, name, colour, type, locked):
-            super().__init__(name, colour, type)
+        def __init__(self, name, colour, locked):
+            super().__init__(name, colour, "door")
             self._locked = locked
 
         # Getters
