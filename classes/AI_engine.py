@@ -18,7 +18,9 @@ class DQN(nn.Module):
 class Agent:
     def __init__(self, env, lr=0.001, gamma=0.99, epsilon=1.0, epsilon_decay=0.995):
         self.env = env
-        self.model = DQN(input_dim=2, output_dim=4)  # Input: agent position (x, y); Output: Q-values for 4 actions
+        self.model = DQN(input_dim=4, output_dim=4)  # Input: [agent_x, agent_y, goal_x, goal_y]
+        self.target_model = DQN(input_dim=4, output_dim=4)
+        self.target_model.load_state_dict(self.model.state_dict())
         self.optimizer = optim.Adam(self.model.parameters(), lr=lr)
         self.criterion = nn.MSELoss()
         self.gamma = gamma
@@ -26,6 +28,7 @@ class Agent:
         self.epsilon_decay = epsilon_decay
         self.memory = []
         self.batch_size = 32
+        self.update_target_steps = 10
     
     def choose_action(self, state):
         if random.random() < self.epsilon:
@@ -57,7 +60,7 @@ class Agent:
         # Calculate Q-values
         q_values = self.model(states).gather(1, actions.unsqueeze(-1)).squeeze(-1)
         with torch.no_grad():
-            next_q_values = self.model(next_states).max(1)[0]
+            next_q_values = self.target_model(next_states).max(1)[0]
         
         # Calculate target
         targets = rewards + self.gamma * next_q_values * (1 - dones)
@@ -70,3 +73,6 @@ class Agent:
         
         # Decay epsilon
         self.epsilon *= self.epsilon_decay
+    
+    def update_target_network(self):
+        self.target_model.load_state_dict(self.model.state_dict())
