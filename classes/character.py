@@ -2,11 +2,13 @@ from classes import *
 
 class Character:
     def __init__(self, name, sprite, inventory, posx, posy):
+
         self._name = name
         self._sprite = sprite
         self._health = 100
         self._inventory = inventory
         self._position = posx, posy
+        self.frozen = False
         self._visibleArea = []
         self._visionRange = 10
 
