@@ -8,6 +8,7 @@ class Character:
         self.inventory = inventory
         self.position = posx, posy
         self.frozen = False
+        self.visibleArea = self.getVisibleArea()
 
     def getVisibleArea(self, grid, visionRange):
         x, y = self.position
@@ -15,7 +16,13 @@ class Character:
         for i in range(max(0, x - visionRange), min(len(grid), x + visionRange + 1)):
             for j in range(max(0, y - visionRange), min(len(grid[0]), y + visionRange + 1)):
                 visibleArea.append((i, j, grid[i][j]))
-        return visibleArea
+        self.visibleArea = visibleArea
+
+    def moveCharacter(self, grid, move):
+        x, y = self.position
+        newX, newY = x + move[0], y + move[1]
+        if 0 <= newX < len(grid) and 0 <= newY < len(grid[0]):
+            self.position = newX, newY
 
     def getName(self):
         return self.name
