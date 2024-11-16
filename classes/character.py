@@ -1,3 +1,5 @@
+from classes import *
+
 class Character:
     def __init__(self, name, sprite, inventory, posx, posy):
         self.name = name
