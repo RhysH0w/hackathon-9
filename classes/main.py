@@ -4,7 +4,7 @@ from random import randint
 
 
 
-def trainAgent(env, agent, num_episodes=500):
+def trainAgent(env, agent, num_episodes):
     for episode in range(num_episodes):
         state = env.reset()
         done = False
@@ -17,7 +17,7 @@ def trainAgent(env, agent, num_episodes=500):
             agent.train()
             state = next_state
             count += 1
-            if count > 500:
+            if count > 1000:
                 break
 
         print(f"Episode {episode + 1} - Moves: {count}")
@@ -40,7 +40,7 @@ for i in range(5):
 
 env = MazeEnv(5, obstacles)
 agent = Agent(env)
-agent, env = trainAgent(env, agent, num_episodes=200)
+agent, env = trainAgent(env, agent, 100)
 # env.change_goal([2, 3])
 # agent, env = trainAgent(env, agent, num_episodes=100)
 

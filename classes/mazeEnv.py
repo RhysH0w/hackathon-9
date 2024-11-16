@@ -5,11 +5,14 @@ class MazeEnv:
     def __init__(self, size, obstacles):
         self.size = size
         self.obstacles = obstacles
+        self.visited = None  # To track visited squares
         self.reset()
     
     def reset(self):
         self.agent_pos = [0, 0]  # Start at the top-left corner
         self.goal_pos = [self.size - 1, self.size - 1]  # Goal at the bottom-right corner
+        self.visited = np.zeros((self.size, self.size))  # Reset visited squares
+        self.visited[0, 0] = 1  # Mark starting position as visited
         self.path = [self.agent_pos.copy()]
         return self.get_state()
     
@@ -25,7 +28,6 @@ class MazeEnv:
         if (0 <= new_pos[0] < self.size and 0 <= new_pos[1] < self.size) and new_pos not in self.obstacles:
             self.agent_pos = new_pos
 
-
         # Track the path
         self.path.append(self.agent_pos.copy())
         
@@ -33,8 +35,17 @@ class MazeEnv:
         if self.agent_pos == self.goal_pos:
             return self.get_state(), 1.0, True  # Reward for reaching the goal
         
+         # Exploration bonus for unvisited squares
+        exploration_bonus = 0
+        if self.visited[self.agent_pos[0], self.agent_pos[1]] == 0:
+            exploration_bonus = 0.1  # Reward for exploring a new square
+            self.visited[self.agent_pos[0], self.agent_pos[1]] = 1
+        else:
+            exploration_bonus = -0.1
+            
         # Small penalty for each move to encourage efficiency
-        return self.get_state(), -0.01, False
+        return self.get_state(), -0.01 + exploration_bonus, False
+        
     
     def render(self, show_path=True):
         grid = np.zeros((self.size, self.size))
