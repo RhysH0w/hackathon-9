@@ -4,12 +4,15 @@ import matplotlib.pyplot as plt
 class MazeEnv:
     def __init__(self, size=5):
         self.size = size
+        self.visited = None  # To track visited squares
         self.reset()
     
     def reset(self):
         self.agent_pos = [0, 0]  # Start at the top-left corner
-        self.goal_pos = [self.size - 1, self.size - 1]  # End at the bottom-right corner
-        self.path = [self.agent_pos.copy()]  # Track the agent's path
+        self.goal_pos = [self.size - 1, self.size - 1]  # Goal at the bottom-right corner
+        self.visited = np.zeros((self.size, self.size))  # Reset visited squares
+        self.visited[0, 0] = 1  # Mark starting position as visited
+        self.path = [self.agent_pos.copy()]
         return self.get_state()
     
     def get_state(self):
@@ -29,10 +32,17 @@ class MazeEnv:
         
         # Reward for reaching the goal
         if self.agent_pos == self.goal_pos:
-            return self.get_state(), 1, True  # state, reward, done
-        else:
-            return self.get_state(), -0.01, False  # Small penalty for each move
-    
+            return self.get_state(), 1.0, True  # Goal reached
+        
+        # Exploration bonus for unvisited squares
+        exploration_bonus = 0
+        if self.visited[self.agent_pos[0], self.agent_pos[1]] == 0:
+            exploration_bonus = 0.1  # Reward for exploring a new square
+            self.visited[self.agent_pos[0], self.agent_pos[1]] = 1
+        
+        # Small penalty for each move to encourage efficiency
+        return self.get_state(), -0.01 + exploration_bonus, False
+
     def render(self, show_path=True):
         # Create a grid representation
         grid = np.zeros((self.size, self.size))
