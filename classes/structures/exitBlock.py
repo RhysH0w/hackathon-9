@@ -1,12 +1,12 @@
-from classes.structures.specialBlock import specialBlock
+from classes.structures.block import Block
 
 
-class exitBlock(specialBlock):
+class exitBlock(Block):
 
         # Constructor
 
         def __init__(self, name, colour,):
-            super().__init__(name, colour, "exit")
+            super().__init__(name, colour, "exit", True)
             _exitStatus = False
 
         # Getters
@@ -18,8 +18,3 @@ class exitBlock(specialBlock):
 
         def setExitStatus(self, exitStatus):
             self._exitStatus = exitStatus
-
-        # Methods
-
-        def toggle(self):
-            return True
