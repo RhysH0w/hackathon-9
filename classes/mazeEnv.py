@@ -23,6 +23,9 @@ class MazeEnv:
         # Check if the new position is within bounds
         if 0 <= new_pos[0] < self.size and 0 <= new_pos[1] < self.size:
             self.agent_pos = new_pos
+
+        # Check if new position is not an obstacle
+        #if new_pos not in :
         
         # Track the path
         self.path.append(self.agent_pos.copy())
