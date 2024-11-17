@@ -3,19 +3,19 @@ import matplotlib.pyplot as plt
 from random import randint
 
 class MazeEnv:
-    def __init__(self, size, obstacles=[[2, 2], [3, 3]]):
+    def __init__(self, size):
         self.size = size
-        self.obstacles = obstacles
+        self.obstacles = []
         self.visited = None  # To track visited squares
-        self.reset()
+        self.reset(goal_pos=[size - 1, size - 1])
     
-    def reset(self):
-        self.agent_pos = [0, 0]  # Start at the top-left corner
-        self.goal_pos = [self.size - 1, self.size - 1]  # Goal at the bottom-right corner
+    def reset(self, start_pos=[0, 0], goal_pos=[4, 4]):
+        self.agent_pos = start_pos
+        self.goal_pos = goal_pos # Goal at the bottom-right corner
         self.visited = np.zeros((self.size, self.size))  # Reset visited squares
         self.visited[0, 0] = 1  # Mark starting position as visited
         self.path = [self.agent_pos.copy()]
-        self.obstacles = self.createRandomObstacles(self.size)
+        #self.obstacles = self.createRandomObstacles(self.size)
         return self.get_state()
     
     def get_state(self):
@@ -25,6 +25,9 @@ class MazeEnv:
         # Actions: 0=up, 1=down, 2=left, 3=right
         moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
         new_pos = [self.agent_pos[0] + moves[action][0], self.agent_pos[1] + moves[action][1]]
+
+        if self.agent_pos == new_pos:
+            step(self, randint(0, 3))
         
         # Check if the new position is within bounds
         if (0 <= new_pos[0] < self.size and 0 <= new_pos[1] < self.size) and new_pos not in self.obstacles:

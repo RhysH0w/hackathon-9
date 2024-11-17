@@ -50,6 +50,9 @@ class Enemy(Character):
         self.memory = []
         self.batch_size = 32
         
+    def getEnv(self):
+        return self.env
+    
     def buildFirstGrid(self, grid):
         ownGrid = []
         for i in range (len(grid)):
@@ -110,7 +113,7 @@ class Enemy(Character):
 
     def trainEnemy(self, num_episodes):
         for episode in range(num_episodes):
-            state = self.env.reset()
+            state = self.env.reset(start_pos=[self._posx, self._posy], goal_pos=self.env.goal_pos)
             done = False
             count = 0
 
@@ -132,8 +135,8 @@ class Enemy(Character):
                 print(f"Episode {episode + 1}: Epsilon = {self.epsilon:.3f}")
                 #agent.save_model()
 
-        self.save_model()
-        print("Training complete. Final model saved.")
+        #self.save_model()
+        #print("Training complete. Final model saved.")
         
     def updateGoal(self, goal_pos):
         self.env.goal_pos = goal_pos

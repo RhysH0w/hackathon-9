@@ -1,13 +1,12 @@
 import pygame
 from mazeEnv import MazeEnv
 from enemy import Enemy
-from main import trainEnemy
-from main import createRandomObstacles
+import numpy as np
 
 class RunMap:
 
     @staticmethod
-    def runMap(player, playerSpawnPos, enemy, enemySpawnPos, grid):
+    def runMap(player, enemy, playerSpawnPos=[0,0], enemySpawnPos=[8, 8], grid=[]):
         # Initialize Pygame
         pygame.init()
 
@@ -59,7 +58,7 @@ class RunMap:
                     if grid[row][col] == 1:
                         objectMap.append([row, col, WALL])
 
-        def draw_map():
+        def draw_map(enemy_pos, player_pos):
             for row in range(GRID_ROWS):
                 for col in range(GRID_COLS):
                     x = col * CELL_WIDTH
@@ -80,7 +79,7 @@ class RunMap:
 
         def draw_inventory():
             """Draw the player's inventory as a toolbar at the top of the screen."""
-            inventory = player.inventory[:3]  # Get the first 3 items
+            inventory = player._inventory[:3]  # Get the first 3 items
             for i, item in enumerate(inventory):
                 x = i * CELL_WIDTH
                 y = 0
@@ -104,12 +103,32 @@ class RunMap:
             elif key == pygame.K_RIGHT and player_pos[1] < GRID_COLS - 1 and grid[player_pos[0]][player_pos[1] + 1] != WALL:  # Move right
                 player_pos[1] += 1
 
-        env = MazeEnv(5, createRandomObstacles(5))
-        enemy = Enemy(env=env)
+        def render_screen(screen, enemy_pos, player_pos):
+            screen.fill((255, 255, 255))  # Fill the screen with white
+            draw_inventory()  # Draw the player's inventory
+            draw_grid()
+            draw_map(enemy_pos, player_pos)
+            pygame.display.flip()
+            return screen
         
+    
+        for row in range(GRID_ROWS):
+            for value in range(GRID_COLS):
+                if grid[row][value] == 1:
+                    x = value
+                    y = row
+                    enemy.env.obstacles.append([y, x])
+
+        for i in enemy.env.obstacles:
+            print(i)
+
+
         # Main game loop
         running = True
         while running:
+
+            screen = render_screen(screen, enemy_pos, player_pos)
+
             player_moved = False
             while not player_moved:
                 for event in pygame.event.get():
@@ -123,18 +142,25 @@ class RunMap:
             if not running:
                 break
 
+            screen = render_screen(screen ,enemy_pos, player_pos)
+
             player.update_position(player_pos)
 
             # Move the enemy
+            enemy.posx = enemy_pos[0]
+            enemy.posy = enemy_pos[1]
+
             enemy.updateGoal(player_pos)
-            enemy.trainEnemy(100)
+            enemy.trainEnemy(1)
+
+            env = enemy.getEnv()
+            path = np.array(env.path)
+            print("Path: ", path)
+            print( "End goal: ", env.goal_pos)
+            enemy_pos = env.path[1]
+            print(f"Enemy position: {enemy_pos}")
 
             enemy.update_position(enemy_pos)
 
-            screen.fill((255, 255, 255))  # Fill the screen with white
-            draw_inventory()  # Draw the player's inventory
-            draw_grid()
-            draw_map()
-            pygame.display.flip()
 
         pygame.quit()
