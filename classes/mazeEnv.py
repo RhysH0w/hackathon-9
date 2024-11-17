@@ -7,6 +7,7 @@ class MazeEnv:
         self.size = size
         self.obstacles = []
         self.visited = None  # To track visited squares
+        self.sight = []
         self.reset(goal_pos=[size - 1, size - 1])
     
     def reset(self, start_pos=[0, 0], goal_pos=[4, 4]):
@@ -19,7 +20,26 @@ class MazeEnv:
         return self.get_state()
     
     def get_state(self):
-        return [self.agent_pos[0], self.agent_pos[1], self.goal_pos[0], self.goal_pos[1]]
+        adj_nodes = self.get_adjecent_nodes()
+        return [self.agent_pos[0], self.agent_pos[1], self.goal_pos[0], self.goal_pos[1]] + adj_nodes + self.visited.flatten().tolist()
+    
+    def get_adjecent_nodes(self):
+        moves = self.get_sight()
+        adj_info = []
+
+        for move in moves:
+            new_pos = [self.agent_pos[0] + move[0], self.agent_pos[1]+move[1]]
+
+            if (0 <= new_pos[0] < self.size and 0 < new_pos[1] < self.size):
+                if new_pos == self.agent_pos:
+                    adj_info.append(999) #Goal
+                elif new_pos in self.obstacles:
+                    adj_info.append(1) #Obstacle
+                else:
+                    adj_info.append(0) #Blank space
+            else:
+                adj_info.append(-1)
+        return adj_info
     
     def step(self, action):
         # Actions: 0=up, 1=down, 2=left, 3=right
@@ -38,7 +58,7 @@ class MazeEnv:
         
         # Reward for reaching the goal
         if self.agent_pos == self.goal_pos:
-            return self.get_state(), 1.0, True  # Reward for reaching the goal
+            return self.get_state(), 10.0, True  # Reward for reaching the goal
         
          # Exploration bonus for unvisited squares
         exploration_bonus = 0
@@ -49,7 +69,7 @@ class MazeEnv:
         #     exploration_bonus = -0.1
             
         # Small penalty for each move to encourage efficiency
-        return self.get_state(), -0.01 + exploration_bonus, False
+        return self.get_state(), -0.02 + exploration_bonus, False
         
     
     def render(self, show_path=True):
@@ -79,3 +99,9 @@ class MazeEnv:
             if coor not in [[0, 0], [1, 0], [0, 1],  [size - 1, size - 1]]:
                 obstacles.append(coor)
         return obstacles
+    
+    def add_sight(self, square):
+        self.sight.append(square)
+
+    def get_sight(self):
+        return self.sight

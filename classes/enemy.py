@@ -30,25 +30,33 @@ class DQN(nn.Module):
 
 
 class Enemy(Character):
-    def __init__(self, sprite="", inventory=[], posx=0, posy=0, env=MazeEnv(5)):
+    def __init__(self, sprite="", inventory=[], posx=0, posy=0, env=MazeEnv(5), sightRange=1):
         #super().__init__(self, name, sprite, inventory, posx, posy)
         #The super() call automatically passes self to the Character class, so you don’t need to include self explicitly. 
         super().__init__('Enemy', sprite, inventory, posx, posy)
         self._ownGrid = []
 
+        self.env = env
         self.model_path = "dqn_model.pth"
-        self.model = DQN(input_dim=4, output_dim=4)
+        self.identifyVisibleNodes(sightRange)
+        input_dim = (env.size**2) + 2 + 2 + len(env.get_sight())
+        self.model = DQN(input_dim=input_dim, output_dim=4)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.epsilon = 1.0
         self.load_model()
 
-        self.env = env
         self.criterion = nn.MSELoss()
         self.gamma = 0.95
         self.epsilon_min = 0.01
-        self.epsilon_decay = 0.995
+        self.epsilon_decay = 0.999
         self.memory = []
         self.batch_size = 32
+    
+    def identifyVisibleNodes(self, sightRange):
+        for i in range(-1*sightRange, sightRange+1):
+            for j in range(-1*sightRange, sightRange+1):
+                env = self.env
+                env.add_sight((i,j))
         
     def getEnv(self):
         return self.env

@@ -11,7 +11,7 @@ if __name__ == "__main__":
     player = Player("player", "sprite", [], 0, 0)
 
     env = MazeEnv(10)
-    enemy = Enemy(env=env, posx=8, posy=8)
+    enemy = Enemy(env=env, posx=8, posy=8, sightRange=1)
 
     #enemy = Enemy("enemy", "sprite", [], 9, 9)
     grid = [
