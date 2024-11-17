@@ -1,4 +1,4 @@
-from classes import *
+# This file contains the class for the character object. The character object is the object that the player controls. It has
 
 class Character:
     def __init__(self, name, sprite, inventory, posx, posy):

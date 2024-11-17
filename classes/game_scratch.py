@@ -1,7 +1,7 @@
 import pygame
-from classes.enemy import Enemy
-from classes.player import Player
-from classes.structures.doorBlock import doorBlock
+from .enemy import Enemy
+from .player import Player
+from .structures.doorBlock import doorBlock
 
 # just a scratch
 WALL = 1
