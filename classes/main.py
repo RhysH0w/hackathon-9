@@ -3,7 +3,7 @@ from mazeEnv import *
 from random import randint
 
 env = MazeEnv(5)
-enemy = Enemy(env=env)
+enemy = Enemy(env=env, sightRange=1)
 # enemy, env = trainEnemy(env, enemy, 200)
 enemy.trainEnemy(100)
 
