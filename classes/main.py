@@ -1,14 +1,18 @@
 from AI_engine import *
 from mazeEnv import *
+from enemy import Enemy
 from random import randint
 
 
 
-def trainAgent(env, agent, num_episodes=500):
+def trainAgentWithEnemy(env, agent, enemy, num_episodes=500):
     for episode in range(num_episodes):
         state = env.reset()
         done = False
         count = 0
+
+        enemy.buildFirstGrid(env.map_memory)
+        enemy.setVisibleArea(env.map_memory)
 
         while not done:
             action = agent.choose_action(state)
@@ -17,7 +21,12 @@ def trainAgent(env, agent, num_episodes=500):
             agent.train()
             state = next_state
             count += 1
-            if count > 500:
+
+            enemy.moveCharacter(env.map_memory, [randint(-1,1), randint(-1,1)])
+            enemy.setVisibleArea(env.map_memory)
+            enemy.updateOwnGrid()
+
+            if count > 1000:
                 break
 
         print(f"Episode {episode + 1} - Moves: {count}")
@@ -40,7 +49,9 @@ for i in range(5):
 
 env = MazeEnv(5, obstacles)
 agent = Agent(env)
-agent, env = trainAgent(env, agent, num_episodes=200)
+enemy = Enemy("enemy", "sprite", [], 0, 0)
+
+trainAgentWithEnemy(env, agent, enemy, )
 # env.change_goal([2, 3])
 # agent, env = trainAgent(env, agent, num_episodes=100)
 

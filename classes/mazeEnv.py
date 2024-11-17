@@ -24,7 +24,8 @@ class MazeEnv:
         self.map_memory[position[0], position[1]] = value
     
     def get_state(self):
-        return [self.agent_pos[0], self.agent_pos[1], self.goal_pos[0], self.goal_pos[1]]
+       x= [self.agent_pos[0], self.agent_pos[1], self.goal_pos[0], self.goal_pos[1]]# + self.map_memory.flatten().tolist()
+       return x
     
     def step(self, action):
         # Actions: 0=up, 1=down, 2=left, 3=right

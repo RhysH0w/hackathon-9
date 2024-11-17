@@ -71,7 +71,7 @@ class Agent:
 
         
         # Decay epsilon
-        #self.epsilon *= self.epsilon_decay
+        self.epsilon *= self.epsilon_decay
 
     def update_epsilon(self):
         self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
