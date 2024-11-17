@@ -1,4 +1,8 @@
 import pygame
+from mazeEnv import MazeEnv
+from enemy import Enemy
+from main import trainEnemy
+from main import createRandomObstacles
 
 class RunMap:
 
@@ -87,7 +91,9 @@ class RunMap:
             elif key == pygame.K_RIGHT and player_pos[1] < GRID_COLS - 1 and grid[player_pos[0]][player_pos[1] + 1] != WALL:  # Move right
                 player_pos[1] += 1
 
-        # Main game loop
+        env = MazeEnv(5, createRandomObstacles(5))
+        enemy = Enemy(env=env)
+        
         # Main game loop
         running = True
         while running:
@@ -105,7 +111,8 @@ class RunMap:
                 break
 
             # Move the enemy
-            move_enemy()  # Move the enemy after the player moves
+            enemy.updateGoal(player_pos)
+            enemy.trainEnemy(100)
 
             screen.fill((255, 255, 255))  # Fill the screen with white
             draw_grid()

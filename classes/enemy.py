@@ -1,17 +1,19 @@
-from classes.character import Character
-from static.static import *
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import random
-import os
-
 import sys
+import os
 from character import Character
 
 # Add the project root directory to PYTHONPATH
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
+
+from classes.character import Character
+from static.static import *
+from mazeEnv import MazeEnv
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import random
+
 
 class DQN(nn.Module):
     def __init__(self, input_dim, output_dim):
@@ -28,7 +30,7 @@ class DQN(nn.Module):
 
 
 class Enemy(Character):
-    def __init__(self, sprite, inventory, posx, posy, env=MazeEnv(5)):
+    def __init__(self, sprite="", inventory=[], posx=0, posy=0, env=MazeEnv(5)):
         #super().__init__(self, name, sprite, inventory, posx, posy)
         #The super() call automatically passes self to the Character class, so you don’t need to include self explicitly. 
         super().__init__('Enemy', sprite, inventory, posx, posy)
@@ -104,6 +106,37 @@ class Enemy(Character):
 
     def update_epsilon(self):
         self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
+
+
+    def trainEnemy(self, num_episodes):
+        for episode in range(num_episodes):
+            state = self.env.reset()
+            done = False
+            count = 0
+
+            while not done:
+                action = self.choose_action(state)
+                next_state, reward, done = self.env.step(action)
+                self.store_transition(state, action, reward, next_state, done)
+                self.train()
+                state = next_state
+                count += 1
+                if count > 1000:
+                    break
+
+            print(f"Episode {episode + 1} - Moves: {count}")
+
+            self.update_epsilon()
+
+            if (episode + 1) % 50 == 0:
+                print(f"Episode {episode + 1}: Epsilon = {self.epsilon:.3f}")
+                #agent.save_model()
+
+        self.save_model()
+        print("Training complete. Final model saved.")
+        
+    def updateGoal(self, goal_pos):
+        self.env.goal_pos = goal_pos
     
     def save_model(self):
         checkpoint = {
