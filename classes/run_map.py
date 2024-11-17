@@ -22,7 +22,7 @@ class RunMap:
         PLAYER_COLOR = (0, 255, 0)
         ENEMY_COLOR = (255, 0, 0)
         WALL_COLOR = (0, 0, 0)
-        DOOR_COLOR = (0, 0, 255)
+        DOOR_COLOR = (165, 42, 42)
 
         # Set up grid dimensions
         GRID_ROWS = len(grid)
@@ -45,6 +45,13 @@ class RunMap:
             for row in range(1, GRID_ROWS):
                 y = row * CELL_HEIGHT
                 pygame.draw.line(screen, GRID_COLOR, (0, y), (SCREEN_WIDTH, y))
+
+        def createObjectMap():
+            objectMap = [[0 for _ in range(GRID_COLS)] for _ in range(GRID_ROWS)]
+            for row in range(GRID_ROWS):
+                for col in range(GRID_COLS):
+                    if grid[row][col] == 1:
+                        objectMap.append([row, col, WALL])
 
         def draw_map():
             for row in range(GRID_ROWS):
@@ -81,13 +88,24 @@ class RunMap:
                 player_pos[1] += 1
 
         # Main game loop
+        # Main game loop
         running = True
         while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.KEYDOWN:  # Handle arrow key presses
-                    move_player(event.key)  
+            player_moved = False
+            while not player_moved:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+                        player_moved = True
+                    elif event.type == pygame.KEYDOWN:  # Handle arrow key presses
+                        move_player(event.key)
+                        player_moved = True
+
+            if not running:
+                break
+
+            # Move the enemy
+            move_enemy()  # Move the enemy after the player moves
 
             screen.fill((255, 255, 255))  # Fill the screen with white
             draw_grid()
