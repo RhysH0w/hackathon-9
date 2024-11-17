@@ -12,6 +12,7 @@ class RunMap:
         pygame.init()
 
 
+        GROUND = 0
         WALL = 1
         DOOR = 2
 
@@ -27,6 +28,7 @@ class RunMap:
         ENEMY_COLOR = (255, 0, 0)
         WALL_COLOR = (0, 0, 0)
         DOOR_COLOR = (165, 42, 42)
+        INVENTORY_COLOR = (255, 255, 0)
 
         # Set up grid dimensions
         GRID_ROWS = len(grid)
@@ -35,8 +37,8 @@ class RunMap:
         CELL_HEIGHT = SCREEN_HEIGHT // GRID_ROWS
 
         # Set player and enemy positions
-        player_pos = playerSpawnPos
-        enemy_pos = enemySpawnPos
+        player_pos = list(playerSpawnPos)
+        enemy_pos = list(enemySpawnPos)
 
         def draw_grid():
             """Draw the 10x10 grid."""
@@ -66,13 +68,24 @@ class RunMap:
                         color = PLAYER_COLOR
                     elif [row, col] == enemy_pos:
                         color = ENEMY_COLOR
-                    elif grid[row][col] == 1:  # WALL
+                    elif grid[row][col] == GROUND: # 0
+                        color = (255, 255, 255)
+                    elif grid[row][col] == WALL:  # 1
                         color = WALL_COLOR
-                    elif grid[row][col] == 2:  # DOOR
+                    elif grid[row][col] == DOOR:  # 2
                         color = DOOR_COLOR
                     else:
                         color = (255, 255, 255)  # Default color for empty cells
                     pygame.draw.rect(screen, color, (x, y, CELL_WIDTH, CELL_HEIGHT))
+
+        def draw_inventory():
+            """Draw the player's inventory as a toolbar at the top of the screen."""
+            inventory = player.inventory[:3]  # Get the first 3 items
+            for i, item in enumerate(inventory):
+                x = i * CELL_WIDTH
+                y = 0
+                pygame.draw.rect(screen, INVENTORY_COLOR , (x, y, CELL_WIDTH, CELL_HEIGHT))
+                # Optionally, you can add text or images to represent the items
 
         def draw_character(pos, col):
             """Draw the player as a rectangle in the grid."""
@@ -115,6 +128,7 @@ class RunMap:
             enemy.trainEnemy(100)
 
             screen.fill((255, 255, 255))  # Fill the screen with white
+            draw_inventory()  # Draw the player's inventory
             draw_grid()
             draw_map()
             pygame.display.flip()

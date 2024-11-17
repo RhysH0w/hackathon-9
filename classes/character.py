@@ -29,6 +29,10 @@ class Character:
         if 0 <= newX < len(grid) and 0 <= newY < len(grid[0]):
             self._position = newX, newY
 
+    def update_position(self, new_pos):
+        self._posx, self._posy = new_pos
+        self._position = new_pos
+
     def getName(self):
         return self._name
     def getHealth(self):
