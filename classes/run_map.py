@@ -1,4 +1,6 @@
 import pygame
+import serial
+import time
 from mazeEnv import MazeEnv
 from enemy import Enemy
 import numpy as np
@@ -119,15 +121,21 @@ class RunMap:
                     y = row
                     enemy.env.obstacles.append([y, x])
 
-        for i in enemy.env.obstacles:
-            print(i)
+        # for i in enemy.env.obstacles:
+        #     print(i)
 
+        try:
+            ser = serial.Serial('COM4', 9600, timeout=0.1)
+        except serial.SerialException:
+            print("Error: Could not connect to the Arduino.")
+            ser = None
 
         # Main game loop
         running = True
         while running:
 
             screen = render_screen(screen, enemy_pos, player_pos)
+            pygame.event.pump()
 
             player_moved = False
             while not player_moved:
@@ -138,6 +146,22 @@ class RunMap:
                     elif event.type == pygame.KEYDOWN:  # Handle arrow key presses
                         move_player(event.key)
                         player_moved = True
+                    elif ser and ser.in_waiting > 0:
+                        command = ser.readline().decode().strip()
+                        print(command)
+                        if command == "U":
+                            move_player(pygame.K_UP)
+                            player_moved = True
+                        elif command == "D":
+                            move_player(pygame.K_DOWN)
+                            player_moved = True
+                        elif command == "L":
+                            move_player(pygame.K_LEFT)
+                            player_moved = True
+                        elif command == "R":
+                            move_player(pygame.K_RIGHT)
+                            player_moved = True
+                        
 
             if not running:
                 break
