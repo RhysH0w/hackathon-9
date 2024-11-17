@@ -1,12 +1,10 @@
 import sys
 import os
+from character import Character
 
 # Add the project root directory to PYTHONPATH
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(project_root)
-
-from classes.character import Character
-from static.static import *
 
 class Enemy(Character):
     def __init__(self, name, sprite, inventory, posx, posy):
