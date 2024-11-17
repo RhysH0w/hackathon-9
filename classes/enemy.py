@@ -1,24 +1,13 @@
 from classes.character import Character
 from static.static import *
-from mazeEnv import MazeEnv
 
-import torch
-import torch.nn as nn
-import torch.optim as optim
-import random
+import sys
 import os
+from character import Character
 
-class DQN(nn.Module):
-    def __init__(self, input_dim, output_dim):
-        super(DQN, self).__init__()
-        self.fc1 = nn.Linear(input_dim, 64)
-        self.fc2 = nn.Linear(64, 64)
-        self.fc3 = nn.Linear(64, output_dim)
-    
-    def forward(self, x):
-        x = torch.relu(self.fc1(x))
-        x = torch.relu(self.fc2(x))
-        return self.fc3(x)
+# Add the project root directory to PYTHONPATH
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(project_root)
 
 class Enemy(Character):
     def __init__(self, sprite, inventory, posx, posy, env=MazeEnv(5)):

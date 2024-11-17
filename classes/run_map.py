@@ -7,6 +7,10 @@ class RunMap:
         # Initialize Pygame
         pygame.init()
 
+
+        WALL = 1
+        DOOR = 2
+
         # Set up display
         SCREEN_WIDTH = 800
         SCREEN_HEIGHT = 600
