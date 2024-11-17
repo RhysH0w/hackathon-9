@@ -89,7 +89,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class MazeEnv:
-    def __init__(self, size, obstacles):
+    def __init__(self, size, obstacles=[[2, 2], [3, 3]]):
         self.size = size
         self.obstacles = obstacles
         self.visited = None  # To track visited squares
