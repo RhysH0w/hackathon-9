@@ -24,6 +24,7 @@ class RunMap:
         ENEMY_COLOR = (255, 0, 0)
         WALL_COLOR = (0, 0, 0)
         DOOR_COLOR = (165, 42, 42)
+        INVENTORY_COLOR = (255, 255, 0)
 
         # Set up grid dimensions
         GRID_ROWS = len(grid)
@@ -32,8 +33,8 @@ class RunMap:
         CELL_HEIGHT = SCREEN_HEIGHT // GRID_ROWS
 
         # Set player and enemy positions
-        player_pos = playerSpawnPos
-        enemy_pos = enemySpawnPos
+        player_pos = list(playerSpawnPos)
+        enemy_pos = list(enemySpawnPos)
 
         def draw_grid():
             """Draw the 10x10 grid."""
@@ -79,7 +80,7 @@ class RunMap:
             for i, item in enumerate(inventory):
                 x = i * CELL_WIDTH
                 y = 0
-                pygame.draw.rect(screen, (255, 255, 0) , (x, y, CELL_WIDTH, CELL_HEIGHT))
+                pygame.draw.rect(screen, INVENTORY_COLOR , (x, y, CELL_WIDTH, CELL_HEIGHT))
                 # Optionally, you can add text or images to represent the items
 
         def draw_character(pos, col):
@@ -116,11 +117,16 @@ class RunMap:
             if not running:
                 break
 
-            # Move the enemy
+            # Update player position
+            player.update_position(player_pos)
+
             move_enemy()  # Move the enemy after the player moves
 
+            # Update enemy position
+            enemy.update_position(enemy_pos)
+
             screen.fill((255, 255, 255))  # Fill the screen with white
-            draw_inventory()
+            draw_inventory()  # Draw the player's inventory
             draw_grid()
             draw_map()
             pygame.display.flip()
