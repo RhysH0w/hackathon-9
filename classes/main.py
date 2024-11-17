@@ -26,6 +26,7 @@ def trainAgent(env, agent, num_episodes):
 
         if (episode + 1) % 50 == 0:
             print(f"Episode {episode + 1}: Epsilon = {agent.epsilon:.3f}")
+            #agent.save_model()
 
     agent.save_model()
     print("Training complete. Final model saved.")
@@ -40,8 +41,9 @@ for i in range(5):
 
 env = MazeEnv(5, obstacles)
 agent = Agent(env)
-agent, env = trainAgent(env, agent, 100)
+agent, env = trainAgent(env, agent, 200)
 # env.change_goal([2, 3])
 # agent, env = trainAgent(env, agent, num_episodes=100)
 
 env.render(show_path=True)
+

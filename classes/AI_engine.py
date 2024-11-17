@@ -17,7 +17,7 @@ class DQN(nn.Module):
         return self.fc3(x)
 
 class Agent:
-    def __init__(self, env, lr=0.001, gamma=0.99, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995, model_path="dqn_model.pth"):
+    def __init__(self, env, lr=0.001, gamma=0.95, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995, model_path="dqn_model.pth"):
 
         self.model_path = model_path
         self.model = DQN(input_dim=4, output_dim=4)
@@ -71,9 +71,8 @@ class Agent:
         loss.backward()
         self.optimizer.step()
 
-        
-        # Decay epsilon
-        #self.epsilon *= self.epsilon_decay
+        #Decay epsilon
+        self.epsilon *= self.epsilon_decay
 
     def update_epsilon(self):
         self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
