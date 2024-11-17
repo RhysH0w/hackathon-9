@@ -35,6 +35,7 @@ def trainAgentWithEnemy(env, agent, enemy, num_episodes=500):
 
         if (episode + 1) % 50 == 0:
             print(f"Episode {episode + 1}: Epsilon = {agent.epsilon:.3f}")
+            #agent.save_model()
 
     agent.save_model()
     print("Training complete. Final model saved.")
@@ -56,3 +57,4 @@ trainAgentWithEnemy(env, agent, enemy, )
 # agent, env = trainAgent(env, agent, num_episodes=100)
 
 env.render(show_path=True)
+

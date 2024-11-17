@@ -1,7 +1,7 @@
 import pygame
 from classes.enemy import Enemy
 from classes.player import Player
-from classes.structures.doorBlock import doorBlock
+#from .structures.doorBlock import doorBlock
 
 # just a scratch
 WALL = 1
@@ -12,13 +12,16 @@ grid[1][2:6] = [WALL] * 4
 grid[2][3] = DOOR
 
 pygame.init()
+inventory_enemy = []
+inventory_player = []
+enemy = Enemy("enemy", "demon.jpg", inventory_enemy, 9, 9)
+player = Player("player", "player.jpg", inventory_player, 0, 0)
 
-#enemy = Enemy("demon", )
-#player = Player()
+print("health:" + str(enemy._health))
+print(player.getPosx())
+print(player._posx)
 
-#print("health:" + enemy._health)
-
-door = doorBlock("first_door", "red", False)
+# door = doorBlock("first_door", "red", False)
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -37,8 +40,6 @@ PLAYER_COLOR = (0, 250, 0)  # green
 ENEMY_COLOR = (0, 0, 250)  # blue
 WALL_COLOR = (250, 0, 0) # red
 DOOR_COLOR = (200, 100, 200)
-player_pos = [0, 0]  
-enemy_pos = [9, 9]
 
 def draw_grid():
     """Draw the 10x10 grid."""
@@ -57,9 +58,9 @@ def draw_map():
         for col in range(GRID_COLS):          
             x = col * CELL_WIDTH
             y = row * CELL_HEIGHT
-            if [row, col] == player_pos:
+            if [row, col] == [player._posy, player._posx]:
                 color = PLAYER_COLOR
-            elif [row, col] == enemy_pos:
+            elif [row, col] == [enemy._posy, enemy._posx]:
                 color = ENEMY_COLOR
             elif grid[row][col] == WALL:
                 color = WALL_COLOR
@@ -70,22 +71,16 @@ def draw_map():
 
             pygame.draw.rect(screen, color, (x, y, CELL_WIDTH, CELL_HEIGHT))
 
-def draw_character(pos, col):
-    """Draw the player as a rectangle in the grid."""
-    x = pos[1] * CELL_WIDTH  
-    y = pos[0] * CELL_HEIGHT
-    pygame.draw.rect(screen, col, (x, y, CELL_WIDTH, CELL_HEIGHT))
-
 def move_player(key):
     """Move the player on the grid based on the arrow keys."""
-    if key == pygame.K_UP and player_pos[0] > 0 and grid[player_pos[0] - 1][player_pos[1]] != WALL:  # Move up
-        player_pos[0] -= 1
-    elif key == pygame.K_DOWN and player_pos[0] < GRID_ROWS - 1  and grid[player_pos[0] + 1][player_pos[1]] != WALL:  # Move down
-        player_pos[0] += 1
-    elif key == pygame.K_LEFT and player_pos[1] > 0 and grid[player_pos[0]][player_pos[1] - 1] != WALL:  # Move left
-        player_pos[1] -= 1
-    elif key == pygame.K_RIGHT and player_pos[1] < GRID_COLS - 1 and grid[player_pos[0]][player_pos[1] + 1] != WALL:  # Move right
-        player_pos[1] += 1
+    if key == pygame.K_UP and player._posy > 0 and grid[player._posy - 1][player._posx] != WALL:  # Move up
+        player._posy -= 1
+    elif key == pygame.K_DOWN and player._posy < GRID_ROWS - 1  and grid[player._posy + 1][player._posx] != WALL:  # Move down
+        player._posy += 1
+    elif key == pygame.K_LEFT and player._posx > 0 and grid[player._posy][player._posx - 1] != WALL:  # Move left
+        player._posx -= 1
+    elif key == pygame.K_RIGHT and player._posx < GRID_COLS - 1 and grid[player._posy][player._posx + 1] != WALL:  # Move right
+        player._posx += 1
 
 # Main game loop
 running = True
@@ -101,8 +96,6 @@ while running:
 
     draw_grid()
     draw_map()
-    #draw_character(player_pos, PLAYER_COLOR)
-    #draw_character(enemy_pos, ENEMY_COLOR)
 
     # Update the display
     pygame.display.flip()

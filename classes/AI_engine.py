@@ -17,21 +17,23 @@ class DQN(nn.Module):
         return self.fc3(x)
 
 class Agent:
-    def __init__(self, env, lr=0.001, gamma=0.99, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995, model_path="dqn_model.pth"):
+    def __init__(self, env, lr=0.001, gamma=0.95, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995, model_path="dqn_model.pth"):
 
-        self.env = env
+        self.model_path = model_path
         self.model = DQN(input_dim=4, output_dim=4)
         self.optimizer = optim.Adam(self.model.parameters(), lr=lr)
+        self.epsilon = epsilon
+        self.load_model()
+
+        self.env = env
         self.criterion = nn.MSELoss()
         self.gamma = gamma
-        self.epsilon = epsilon
         self.epsilon_min = epsilon_min
         self.epsilon_decay = epsilon_decay
         self.memory = []
         self.batch_size = 32
-        self.model_path = model_path
+        
 
-        self.load_model()
     
     def choose_action(self, state):
         if random.random() < self.epsilon:
