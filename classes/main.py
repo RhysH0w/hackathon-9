@@ -1,4 +1,4 @@
-from AI_engine import *
+from enemy import *
 from mazeEnv import *
 from random import randint
 
@@ -40,7 +40,7 @@ for i in range(5):
         obstacles.append(coor)
 
 env = MazeEnv(5, obstacles)
-agent = Agent(env)
+agent = Enemy(env)
 agent, env = trainAgent(env, agent, 200)
 # env.change_goal([2, 3])
 # agent, env = trainAgent(env, agent, num_episodes=100)
