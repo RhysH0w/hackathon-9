@@ -1,7 +1,7 @@
 import pygame
-from .enemy import Enemy
-from .player import Player
-from .structures.doorBlock import doorBlock
+from classes.enemy import Enemy
+from classes.player import Player
+#from .structures.doorBlock import doorBlock
 
 # just a scratch
 WALL = 1
@@ -21,7 +21,7 @@ print("health:" + str(enemy._health))
 print(player.getPosx())
 print(player._posx)
 
-door = doorBlock("first_door", "red", False)
+# door = doorBlock("first_door", "red", False)
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
