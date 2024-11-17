@@ -123,9 +123,13 @@ class RunMap:
             if not running:
                 break
 
+            player.update_position(player_pos)
+
             # Move the enemy
             enemy.updateGoal(player_pos)
             enemy.trainEnemy(100)
+
+            enemy.update_position(enemy_pos)
 
             screen.fill((255, 255, 255))  # Fill the screen with white
             draw_inventory()  # Draw the player's inventory
