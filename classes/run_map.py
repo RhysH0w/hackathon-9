@@ -103,6 +103,11 @@ class RunMap:
             elif key == pygame.K_RIGHT and player_pos[1] < GRID_COLS - 1 and grid[player_pos[0]][player_pos[1] + 1] != WALL:  # Move right
                 player_pos[1] += 1
 
+
+        def check_collision(player_pos, enemy_pos):
+            """Check if the player and enemy are on the same position."""
+            return player_pos == enemy_pos
+
         def render_screen(screen, enemy_pos, player_pos):
             screen.fill((255, 255, 255))  # Fill the screen with white
             draw_inventory()  # Draw the player's inventory
@@ -185,8 +190,10 @@ class RunMap:
 
                 secondTurn = 5
 
+            # Check for collision
+            if check_collision(player_pos, enemy_pos):
+                print("Collision detected!")
+
             enemy.update_position(enemy_pos)
                 
-
-
         pygame.quit()
