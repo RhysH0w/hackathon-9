@@ -125,6 +125,10 @@ class RunMap:
 
         # Main game loop
         running = True
+
+        # Implement enemy second turn
+        secondTurn = 5
+
         while running:
 
             screen = render_screen(screen, enemy_pos, player_pos)
@@ -146,6 +150,7 @@ class RunMap:
 
             player.update_position(player_pos)
 
+
             # Move the enemy
             enemy.posx = enemy_pos[0]
             enemy.posy = enemy_pos[1]
@@ -161,6 +166,27 @@ class RunMap:
             print(f"Enemy position: {enemy_pos}")
 
             enemy.update_position(enemy_pos)
+            secondTurn -= 1
+
+            if secondTurn == 0:
+                # Move the enemy again
+                enemy.posx = enemy_pos[0]
+                enemy.posy = enemy_pos[1]
+
+                enemy.updateGoal(player_pos)
+                enemy.trainEnemy(1)
+
+                env = enemy.getEnv()
+                path = np.array(env.path)
+                print("Path: ", path)
+                print( "End goal: ", env.goal_pos)
+                enemy_pos = env.path[1]
+                print(f"Enemy position: {enemy_pos}")
+
+                secondTurn = 5
+
+            enemy.update_position(enemy_pos)
+                
 
 
         pygame.quit()
