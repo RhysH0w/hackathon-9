@@ -1,5 +1,3 @@
-# This file contains the class for the character object. The character object is the object that the player controls. It has
-
 class Character:
     def __init__(self, name, sprite, inventory, posx, posy):
 
@@ -8,6 +6,8 @@ class Character:
         self._health = 100
         self._inventory = inventory
         self._position = posx, posy
+        self._posx = posx
+        self._posy = posy
         self.frozen = False
         self._visibleArea = []
         self._visionRange = 10
